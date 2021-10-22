@@ -2,7 +2,7 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.wallbrew/strawpoll-client.svg)](https://clojars.org/com.wallbrew/strawpoll-client)
 [![cljdoc badge](https://cljdoc.org/badge/com.wallbrew/strawpoll-client)](https://cljdoc.org/d/com.wallbrew/strawpoll-client/CURRENT)
-![GitHub Runner](https://github.com/Wall-Brew-Co/strawpoll-client/workflows/Clojure%20CI/badge.svg)
+[![Clojure CI](https://github.com/Wall-Brew-Co/strawpoll-client/actions/workflows/clojure.yml/badge.svg)](https://github.com/Wall-Brew-Co/strawpoll-client/actions/workflows/clojure.yml)
 
 A [clj-http](https://github.com/dakrone/clj-http) client to integrate with [Strawpoll.](https://strawpoll.com/en/)
 
