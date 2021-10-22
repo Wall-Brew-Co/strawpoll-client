@@ -5,6 +5,8 @@
             :url  "https://opensource.org/licenses/MIT"}
   :dependencies [[cheshire "5.10.0"]
                  [clj-http "3.12.3"]
-                 [org.clojure/clojure "1.10.0"]]
-  :profiles {:uberjar {:aot :all}}
+                 [org.clojure/clojure "1.10.3"]]
+  :profiles {:uberjar {:aot :all}
+             :dev {:dependencies [[circleci/bond "0.6.0"]
+                                  [clj-http-fake "1.0.3"]]}}
   :min-lein-version "2.5.3")

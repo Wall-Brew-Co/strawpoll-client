@@ -1,21 +1,39 @@
 (ns strawpoll-client.core
-  (:require [cheshire.core :as json] ;; required by clj-http
+  "Basic functions to interact with [Strawpoll](https://strawpoll.com/en/api-docs/)"
+  (:require [cheshire.core :as json]
             [clj-http.client :as client]
             [strawpoll-client.impl :as impl]))
 
-(def ^:const strawpoll-api-stem "https://strawpoll.com/api")
-
-(defn ->url
-  [& route]
-  (str strawpoll-api-stem (apply str route)))
-
 (defn ->client
+  "Create a client, which is the required first argument to `create-poll!`, `get-poll-results!`, and `delete-poll!`.
+   This function expects an option map, with the following key sets:
+     - :api-key - The Strawpoll API key for your project.
+                  If this key is missing, the library will attempt to load the Environment variable `STRAWPOLL_API_KEY` and the JVM Property `StrawPollApiKey` in this order.
+                  If all three values are nil, an exception will be thrown.
+                  More information is available [on Strawpoll](https://strawpoll.com/en/api-docs/authentication/)
+   All remaining keys will be passed to the underlying [clj-http request function](https://github.com/dakrone/clj-http)"
   [{:keys [clj-http-opts]
     :as   opts}]
   {:api-key       (impl/load-api-key! opts)
    :clj-http-opts clj-http-opts})
 
 (defn create-poll!
+  "Create a poll using the provided `client` titled `title` with `answers`.
+   `client` is expected to be the return value of `strawpoll-client.core/->client`
+   `title` is a string representing the title of the poll you wish to create.
+   `answers` is a sequence of strings representing the poll options user will be able to pick from.
+   Implements all features described in the [API Documentation](https://strawpoll.com/en/api-docs/create-poll/)
+
+   This behavior may be tuned with an additional argument as an option map with the following keys:
+     - `:public?` - A boolean to determine wether or not the poll will be publicly listed. Defaults to falsey
+     - `:disallow-comments?` - A boolean to disable commenting on polls. Defaults to falsey
+     - `:multiple-answers?` - A boolean to indicate wether each voter is allowed to vote on multiple options. Defaults to falsey
+     - `:multiple-votes-per-ip?` - A boolean to indicate if multiple votes may be recorded from a single IP address. Defaults to falsey
+     - `:name-required?` - A boolean to indicate if users must enter a name while voting. Defaults to falsey
+     - `:deadline` - An ISO-8601 Datetime in Zulu Timezone past when the poll will close. Defaults to nil, ergo no closing date will be set
+     - `:only-registered-users?` - A boolean to indicate if users will be required to have an account with strawpoll.com in order to vote. Defaults to falsey
+     - `:allow-vpn-users?` - A boolean to indicate if users behind a VPN will be allowed to vote. Defaults to falsey
+     - `:no-captcha?` - A boolean indicating if voting in the poll will not require solving a captcha. Defaults to falsey, meaning users will have to complete this step"
   ([client title answers]
    (create-poll! client title answers {}))
 
@@ -49,18 +67,27 @@
                               :accept       :json
                               :as           :json
                               :body         (json/generate-string body)})]
-     (:body (client/post (->url "/poll") request-opts)))))
+      (:body (client/post (impl/->url "/poll") request-opts)))))
+
+(defn ->poll-id
+  "A convenience function to extract the identifier of a poll from the return value of `strawpoll-client.core/create-poll!`"
+  [create-poll!-response]
+  (:content_id create-poll!-response))
 
 (defn get-poll-results!
+  "Get the current results of `poll-id` using the provided client.
+   The poll-id is encoded in the response of `strawpoll-client.core/create-poll!` as `content_id`, which may be retreived by `strawpoll-client.core/->poll-id`"
   [{:keys [api-key clj-http-opts]} poll-id]
   (let [request-opts (merge clj-http-opts
                             {:headers      {"API-KEY" api-key}
                              :content-type :json
                              :accept       :json
                              :as           :json})]
-    (:body (client/get (->url "/poll/" poll-id) request-opts))))
+     (:body (client/get (impl/->url "/poll/" poll-id) request-opts))))
 
 (defn delete-poll!
+  "Permanently delete `poll-id` using the provided client.
+   The poll-id is encoded in the response of `strawpoll-client.core/create-poll!` as `content_id`, which may be retreived by `strawpoll-client.core/->poll-id`"
   [{:keys [api-key clj-http-opts]} poll-id]
   (let [body {:content_id poll-id}
         request-opts (merge clj-http-opts
@@ -68,73 +95,8 @@
                              :content-type :json
                              :accept       :json
                              :as           :json
-                             :body         (json/generate-string body)})]
-    (:body (client/delete (->url "/content/delete") request-opts))))
-
-(comment
-  (def client (->client {:api-key "your-api-key"}))
-  (def my-poll (create-poll! client "Test Poll" ["dummy answer" "worse-answer"] {:multiple-answers? true}))
-  (def my-poll-results {:admin_key  "some-admin-key"
-                        :content_id "my-poll-id"
-                        :success    1})
-  (def poll-state (get-poll-results! client (:content_id my-poll)))
-  (def poll-state-results {:content {:creator           {:avatar_path    "/images/avatars/nick-nichols.png"
-                                                         :displayname    "Nick Nichols"
-                                                         :monthly_points 0
-                                                         :username       "nick-nichols"}
-                                     :original_deadline nil
-                                     :comments          1
-                                     :type              "poll"
-                                     :pin               nil
-                                     :title             "Test Poll"
-                                     :poll              {:reset_at           nil
-                                                         :private            1
-                                                         :poll_info          {:vpn                  0
-                                                                              :description          nil
-                                                                              :captcha              1
-                                                                              :ma                   1
-                                                                              :original_description nil
-                                                                              :nsfw                 0
-                                                                              :co                   1
-                                                                              :creator_country_name "United States of America"
-                                                                              :only_reg             0
-                                                                              :ma_limit             nil
-                                                                              :mip                  0
-                                                                              :image                nil
-                                                                              :edited_at            nil
-                                                                              :show_results         1
-                                                                              :enter_name           0
-                                                                              :creator_country      "us"}
-                                                         :total_voters       1
-                                                         :title              "Test Poll"
-                                                         :original_title     nil
-                                                         :poll_answers       [{:answer          "dummy answer"
-                                                                               :id              "answer-id-1"
-                                                                               :original_answer nil
-                                                                               :sorting         1
-                                                                               :type            "text"
-                                                                               :votes           0}
-                                                                              {:answer          "worse-answer"
-                                                                               :id              "answer-id-2"
-                                                                               :original_answer nil
-                                                                               :sorting         2
-                                                                               :type            "text"
-                                                                               :votes           1}]
-                                                         :total_votes        1
-                                                         :is_points_eligible 0
-                                                         :is_votable         1
-                                                         :last_vote_at       "2021-10-21T13:12:31Z"}
-                                     :status            "active"
-                                     :id                "my-poll-id"
-                                     :has_webhooks      0
-                                     :deadline          nil
-                                     :media             nil
-                                     :cookie_id         "my-poll-id"
-                                     :created_at        "2021-10-21T13:07:49Z"}
-                           :success 1})
-
-
-  (def drop-poll (delete-poll! client (:content_id my-poll)))
-  (def drop-poll-results {:message "Delete successful!"
-                          :success 1})
-  )
+                             :body         (json/generate-string body)})
+        resp (:body (client/delete (impl/->url "/content/delete") request-opts))]
+    (if (zero? (:success resp))
+      (Exception. (str "Failure deleting poll! " (:message resp)))
+      resp)))
