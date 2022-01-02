@@ -159,6 +159,6 @@ The API key ought to be treated as any application secret would be.
 
 ## License
 
-Copyright © 2021 - [Wall Brew Co](https://wallbrew.com/)
+Copyright © 2021-2022 - [Wall Brew Co](https://wallbrew.com/)
 
 This software is provided for free, public use as outlined in the [MIT License](https://github.com/Wall-Brew-Co/strawpoll-client/blob/master/LICENSE)

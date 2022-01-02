@@ -1,6 +1,8 @@
 (ns strawpoll-client.repl
   "A Rich comment block demonstrating the lifecycle of a poll"
-  (:require [strawpoll-client.core :as straw]))
+  (:require
+    [strawpoll-client.core :as straw]))
+
 
 (comment
   (def client
