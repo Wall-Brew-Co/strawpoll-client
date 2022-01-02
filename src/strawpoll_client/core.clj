@@ -1,8 +1,10 @@
 (ns strawpoll-client.core
   "Basic functions to interact with [Strawpoll](https://strawpoll.com/en/api-docs/)"
-  (:require [cheshire.core :as json]
-            [clj-http.client :as client]
-            [strawpoll-client.impl :as impl]))
+  (:require
+    [cheshire.core :as json]
+    [clj-http.client :as client]
+    [strawpoll-client.impl :as impl]))
+
 
 (defn ->client
   "Create a client, which is the required first argument to `create-poll!`, `get-poll-results!`, and `delete-poll!`.
@@ -16,6 +18,7 @@
     :as   opts}]
   {:api-key       (impl/load-api-key! opts)
    :clj-http-opts clj-http-opts})
+
 
 (defn create-poll!
   "Create a poll using the provided `client` titled `title` with `answers`.
@@ -50,29 +53,31 @@
             allow-vpn-users?
             no-captcha?]}]
    (let [body         {:poll (merge
-                              {:title   title
-                               :answers answers}
-                              (when public? {:priv false})
-                              (when disallow-comments? {:co false})
-                              (when multiple-answers? {:ma true})
-                              (when multiple-votes-per-ip? {:mip true})
-                              (when name-required? {:enter_name true})
-                              (when deadline {:deadline deadline})
-                              (when only-registered-users? {:only_reg true})
-                              (when allow-vpn-users? {:vpn true})
-                              (when no-captcha? {:captcha false}))}
+                               {:title   title
+                                :answers answers}
+                               (when public? {:priv false})
+                               (when disallow-comments? {:co false})
+                               (when multiple-answers? {:ma true})
+                               (when multiple-votes-per-ip? {:mip true})
+                               (when name-required? {:enter_name true})
+                               (when deadline {:deadline deadline})
+                               (when only-registered-users? {:only_reg true})
+                               (when allow-vpn-users? {:vpn true})
+                               (when no-captcha? {:captcha false}))}
          request-opts (merge clj-http-opts
                              {:headers      {"API-KEY" api-key}
                               :content-type :json
                               :accept       :json
                               :as           :json
                               :body         (json/generate-string body)})]
-      (:body (client/post (impl/->url "/poll") request-opts)))))
+     (:body (client/post (impl/->url "/poll") request-opts)))))
+
 
 (defn ->poll-id
   "A convenience function to extract the identifier of a poll from the return value of `strawpoll-client.core/create-poll!`"
   [create-poll!-response]
   (:content_id create-poll!-response))
+
 
 (defn get-poll-results!
   "Get the current results of `poll-id` using the provided client.
@@ -83,7 +88,8 @@
                              :content-type :json
                              :accept       :json
                              :as           :json})]
-     (:body (client/get (impl/->url "/poll/" poll-id) request-opts))))
+    (:body (client/get (impl/->url "/poll/" poll-id) request-opts))))
+
 
 (defn delete-poll!
   "Permanently delete `poll-id` using the provided client.

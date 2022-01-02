@@ -1,9 +1,11 @@
 (ns strawpoll-client.core-test
-  (:require [bond.james :as bond]
-            [clj-http.client :as http]
-            [clj-http.fake :refer [with-fake-routes-in-isolation]]
-            [clojure.test :as t]
-            [strawpoll-client.core :as sut]))
+  (:require
+    [bond.james :as bond]
+    [clj-http.client :as http]
+    [clj-http.fake :refer [with-fake-routes-in-isolation]]
+    [clojure.test :as t]
+    [strawpoll-client.core :as sut]))
+
 
 (t/deftest create-poll!-test
   (let [sample-response {:cached                nil
@@ -35,8 +37,9 @@
       (with-fake-routes-in-isolation
         {"https://strawpoll.com/api/poll" (fn [_] sample-response)}
         (bond/with-spy [http/post]
-          (t/is (= parsed-body (sut/create-poll! sample-client "test-poll" ["1 answer" "2 answer"])))
-          (t/is (= 1 (-> http/post bond/calls count))))))))
+                       (t/is (= parsed-body (sut/create-poll! sample-client "test-poll" ["1 answer" "2 answer"])))
+                       (t/is (= 1 (-> http/post bond/calls count))))))))
+
 
 (def sample-poll-result "{\"content\":{\"creator\":{\"avatar_path\":\"/images/avatars/nick-nichols.png\",\"displayname\":\"Nick Nichols\",\"monthly_points\":0,\"username\":\"nick-nichols\"},\"original_deadline\":null,\"comments\":1,\"type\":\"poll\",\"pin\":null,\"title\":\"Test Poll\",\"poll\":{\"reset_at\":null,\"private\":1,\"poll_info\":{\"vpn\":0,\"description\":null,\"captcha\":1,\"ma\":1,\"original_description\":null,\"nsfw\":0,\"co\":1,\"creator_country_name\":\"United States of America\",\"only_reg\":0,\"ma_limit\":null,\"mip\":0,\"image\":null,\"edited_at\":null,\"show_results\":1,\"enter_name\":0,\"creator_country\":\"us\"},\"total_voters\":0,\"title\":\"Test Poll\",\"original_title\":null,\"poll_answers\":[{\"answer\":\"dummy answer\",\"id\":\"ub339by5f4e4\",\"original_answer\":null,\"sorting\":1,\"type\":\"text\",\"votes\":0},{\"answer\":\"worse-answer\",\"id\":\"8xddpzqyq8dw\",\"original_answer\":null,\"sorting\":2,\"type\":\"text\",\"votes\":0}],\"total_votes\":0,\"is_points_eligible\":0,\"is_votable\":1,\"last_vote_at\":null},\"status\":\"active\",\"id\":\"jkooopjr5\",\"has_webhooks\":0,\"deadline\":null,\"media\":null,\"cookie_id\":\"jkooopjr5\",\"created_at\":\"2021-10-22T21:37:34Z\"},\"success\":1}")
 
@@ -122,8 +125,9 @@
       (with-fake-routes-in-isolation
         {"https://strawpoll.com/api/poll/jkooopjr5" (fn [_] sample-response)}
         (bond/with-spy [http/get]
-          (t/is (= parsed-body (sut/get-poll-results! sample-client "jkooopjr5")))
-          (t/is (= 1 (-> http/get bond/calls count))))))))
+                       (t/is (= parsed-body (sut/get-poll-results! sample-client "jkooopjr5")))
+                       (t/is (= 1 (-> http/get bond/calls count))))))))
+
 
 (t/deftest delete-poll!-test
   (let [sample-response {:cached                nil
@@ -154,5 +158,5 @@
       (with-fake-routes-in-isolation
         {"https://strawpoll.com/api/content/delete" (fn [_] sample-response)}
         (bond/with-spy [http/delete]
-          (t/is (= parsed-body (sut/delete-poll! sample-client "jkooopjr5")))
-          (t/is (= 1 (-> http/delete bond/calls count))))))))
+                       (t/is (= parsed-body (sut/delete-poll! sample-client "jkooopjr5")))
+                       (t/is (= 1 (-> http/delete bond/calls count))))))))
