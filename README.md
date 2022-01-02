@@ -28,7 +28,7 @@ Each of the functions used to interact with Strawpoll expect a client generated 
 
 This function expects an option map, with the following key sets:
 
-- :api-key - Your Strawpoll API key as a string.
+- `:api-key` - Your Strawpoll API key as a string.
              If this key is missing, the library will attempt to load the Environment variable `STRAWPOLL_API_KEY` and the JVM Property `StrawPollApiKey` in this order.
              All remaining keys in this map will be passed to the underlying [clj-http request function](https://github.com/dakrone/clj-http)
 
