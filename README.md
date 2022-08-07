@@ -6,6 +6,8 @@
 
 A [clj-http](https://github.com/dakrone/clj-http) client to integrate with [Strawpoll.](https://strawpoll.com/en/)
 
+This repository follows the guidelines and standards of the [Wall Brew Open Source Policy.](https://github.com/Wall-Brew-Co/open-source "Our open source guidelines")
+
 ## Installation
 
 A deployed copy of the most recent version of [strawpoll-client can be found on clojars.](https://clojars.org/com.wallbrew/strawpoll-client)
