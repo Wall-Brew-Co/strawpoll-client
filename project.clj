@@ -8,5 +8,5 @@
                  [org.clojure/clojure "1.11.1"]]
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[circleci/bond "0.6.0"]
-                                  [clj-http-fake "1.0.3"]]}}
+                                  [clj-http-fake "1.0.4"]]}}
   :min-lein-version "2.5.3")
