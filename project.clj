@@ -3,7 +3,7 @@
   :url "https://github.com/Wall-Brew-Co/strawpoll-client"
   :license {:name "MIT"
             :url  "https://opensource.org/licenses/MIT"}
-  :dependencies [[cheshire "5.10.0"]
+  :dependencies [[cheshire "5.11.0"]
                  [clj-http "3.12.3"]
                  [org.clojure/clojure "1.11.1"]]
   :profiles {:uberjar {:aot :all}
