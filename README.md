@@ -8,6 +8,11 @@ A [clj-http](https://github.com/dakrone/clj-http) client to integrate with [Stra
 
 This repository follows the guidelines and standards of the [Wall Brew Open Source Policy.](https://github.com/Wall-Brew-Co/open-source "Our open source guidelines")
 
+## DEPRECATION NOTICE
+
+As of 2024-03-10, this library has been deprecated and will no longer receive updates.
+If you wish to continue using the functionality within this library, feel free to fork this repository or to reuse the contents within: As a reminder, this code is provided under the MIT License.
+
 ## Installation
 
 A deployed copy of the most recent version of [strawpoll-client can be found on clojars.](https://clojars.org/com.wallbrew/strawpoll-client)
