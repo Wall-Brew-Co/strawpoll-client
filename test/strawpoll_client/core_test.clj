@@ -1,10 +1,9 @@
 (ns strawpoll-client.core-test
-  (:require
-    [bond.james :as bond]
-    [clj-http.client :as http]
-    [clj-http.fake :refer [with-fake-routes-in-isolation]]
-    [clojure.test :as t]
-    [strawpoll-client.core :as sut]))
+  (:require [bond.james :as bond]
+            [clj-http.client :as http]
+            [clj-http.fake :refer [with-fake-routes-in-isolation]]
+            [clojure.test :as t]
+            [strawpoll-client.core :as sut]))
 
 
 (t/deftest create-poll!-test
