@@ -1,12 +1,11 @@
 (ns strawpoll-client.core
   "Basic functions to interact with [Strawpoll](https://strawpoll.com/en/api-docs/)"
-  (:require
-    [cheshire.core :as json]
-    [clj-http.client :as client]
-    [strawpoll-client.impl :as impl]))
+  (:require [cheshire.core :as json]
+            [clj-http.client :as client]
+            [strawpoll-client.impl :as impl]))
 
 
-(defn ->client
+(defn ^:deprecated ->client
   "Create a client, which is the required first argument to `create-poll!`, `get-poll-results!`, and `delete-poll!`.
    This function expects an option map, with the following key sets:
      - :api-key - The Strawpoll API key for your project.
@@ -20,7 +19,7 @@
    :clj-http-opts clj-http-opts})
 
 
-(defn create-poll!
+(defn ^:deprecated create-poll!
   "Create a poll using the provided `client` titled `title` with `answers`.
    `client` is expected to be the return value of `strawpoll-client.core/->client`
    `title` is a string representing the title of the poll you wish to create.
@@ -73,13 +72,16 @@
      (:body (client/post (impl/->url "/poll") request-opts)))))
 
 
-(defn ->poll-id
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+
+
+(defn ^:deprecated ->poll-id
   "A convenience function to extract the identifier of a poll from the return value of `strawpoll-client.core/create-poll!`"
   [create-poll!-response]
   (:content_id create-poll!-response))
 
 
-(defn get-poll-results!
+(defn ^:deprecated get-poll-results!
   "Get the current results of `poll-id` using the provided client.
    The poll-id is encoded in the response of `strawpoll-client.core/create-poll!` as `content_id`, which may be retreived by `strawpoll-client.core/->poll-id`"
   [{:keys [api-key clj-http-opts]} poll-id]
@@ -91,7 +93,7 @@
     (:body (client/get (impl/->url "/poll/" poll-id) request-opts))))
 
 
-(defn delete-poll!
+(defn ^:deprecated delete-poll!
   "Permanently delete `poll-id` using the provided client.
    The poll-id is encoded in the response of `strawpoll-client.core/create-poll!` as `content_id`, which may be retreived by `strawpoll-client.core/->poll-id`"
   [{:keys [api-key clj-http-opts]} poll-id]

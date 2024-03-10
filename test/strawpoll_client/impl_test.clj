@@ -1,8 +1,7 @@
 (ns strawpoll-client.impl-test
-  (:require
-    [bond.james :as bond]
-    [clojure.test :as t]
-    [strawpoll-client.impl :as sut]))
+  (:require [bond.james :as bond]
+            [clojure.test :as t]
+            [strawpoll-client.impl :as sut]))
 
 
 (t/deftest load-bugsnag-api-key!-test
