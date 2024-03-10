@@ -73,6 +73,7 @@
      (:body (client/post (impl/->url "/poll") request-opts)))))
 
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn ->poll-id
   "A convenience function to extract the identifier of a poll from the return value of `strawpoll-client.core/create-poll!`"
   [create-poll!-response]

@@ -2,7 +2,9 @@
   "Implementation-level functions used throughout the library")
 
 
-(def ^:const strawpoll-api-stem "https://strawpoll.com/api")
+(def ^:const strawpoll-api-stem
+  "The Strawpoll API URI stem"
+  "https://strawpoll.com/api")
 
 
 (defn ->url
